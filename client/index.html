@@ -1,347 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
-  <meta http-equiv='content-type' value='text/html;charset=utf8'>
-  <title>sockbin(1): Websocket Echo Service</title>
-  <style type='text/css' media='all'>
-  /* style: man */
-  
-  body#manpage {
-    margin: 0
-  }
-  
-  .mp {
-    max-width: 100ex;
-    padding: 0 9ex 1ex 4ex
-  }
-  
-  .mp p,
-  .mp pre,
-  .mp ul,
-  .mp ol,
-  .mp dl {
-    margin: 0 0 20px 0
-  }
-  
-  .mp h2 {
-    margin: 10px 0 0 0
-  }
-  
-  .mp > p,
-  .mp > pre,
-  .mp > ul,
-  .mp > ol,
-  .mp > dl {
-    margin-left: 6ex
-  }
-  
-  .mp h3 {
-    margin: 0 0 0 4ex
-  }
-  
-  .mp dt {
-    margin: 0;
-    clear: left
-  }
-  
-  .mp dt.flush {
-    float: left;
-    width: 8ex
-  }
-  
-  .mp dd {
-    margin: 0 0 0 9ex
-  }
-  
-  .mp h1,
-  .mp h2,
-  .mp h3,
-  .mp h4 {
-    clear: left
-  }
-  
-  .mp pre {
-    margin-bottom: 20px
-  }
-  
-  .mp pre+h2,
-  .mp pre+h3 {
-    margin-top: 22px
-  }
-  
-  .mp h2+pre,
-  .mp h3+pre {
-    margin-top: 5px
-  }
-  
-  .mp img {
-    display: block;
-    margin: auto
-  }
-  
-  .mp h1.man-title {
-    display: none
-  }
-  
-  .mp,
-  .mp code,
-  .mp pre,
-  .mp tt,
-  .mp kbd,
-  .mp samp,
-  .mp h3,
-  .mp h4 {
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.42857142857143
-  }
-  
-  .mp h2 {
-    font-size: 16px;
-    line-height: 1.25
-  }
-  
-  .mp h1 {
-    font-size: 20px;
-    line-height: 2
-  }
-  
-  .mp {
-    text-align: left;
-    background: #fff
-  }
-  
-  .mp,
-  .mp code,
-  .mp pre,
-  .mp pre code,
-  .mp tt,
-  .mp kbd,
-  .mp samp {
-    color: #131211
-  }
-  
-  .mp h1,
-  .mp h2,
-  .mp h3,
-  .mp h4 {
-    color: #030201
-  }
-  
-  .mp u {
-    text-decoration: underline
-  }
-  
-  .mp code,
-  .mp strong,
-  .mp b {
-    font-weight: bold;
-    color: #131211
-  }
-  
-  .mp em,
-  .mp var {
-    font-style: italic;
-    color: #232221;
-    text-decoration: none
-  }
-  
-  .mp a,
-  .mp a:link,
-  .mp a:hover,
-  .mp a code,
-  .mp a pre,
-  .mp a tt,
-  .mp a kbd,
-  .mp a samp {
-    color: #0000ff
-  }
-  
-  .mp b.man-ref {
-    font-weight: normal;
-    color: #434241
-  }
-  
-  .mp pre {
-    padding: 0 4ex
-  }
-  
-  .mp pre code {
-    font-weight: normal;
-    color: #434241
-  }
-  
-  .mp h2+pre,
-  h3+pre {
-    padding-left: 0
-  }
-  
-  ol.man-decor,
-  ol.man-decor li {
-    margin: 3px 0 10px 0;
-    padding: 0;
-    float: left;
-    width: 33%;
-    list-style-type: none;
-    text-transform: uppercase;
-    color: #999;
-    letter-spacing: 1px
-  }
-  
-  ol.man-decor {
-    width: 100%
-  }
-  
-  ol.man-decor li.tl {
-    text-align: left
-  }
-  
-  ol.man-decor li.tc {
-    text-align: center;
-    letter-spacing: 4px
-  }
-  
-  ol.man-decor li.tr {
-    text-align: right;
-    float: right
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sockbin: WebSocket 服务</title>
+  <style>
+    :root {
+      --primary-color: hsl(210, 80%, 55%);
+      --success-color: hsl(145, 63%, 42%);
+      --warning-color: hsl(35, 100%, 50%);
+      --danger-color: hsl(0, 78%, 62%);
+      --text-color: hsl(220, 13%, 18%);
+      --bg-color: hsl(0, 0%, 98%);
+      --card-bg: hsl(0, 0%, 100%);
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.1);
+    }
 
-  </style>
-  <style type='text/css' media='all'>
-  /* style: 80c */
-  
-  .mp {
-    max-width: 89ex
-  }
-  
-  ul {
-    list-style: None;
-    margin-left: 0!important
-  }
-  
-  .man-navigation {
-    left: 101ex
-  }
-  .fork-me {
-    z-index:2;
-    position: absolute; top: 0; right: 0; border: 0;
-  }
-  #output-window{
-    z-index:1;
-    display: block;
-    position: fixed;
-    right: 15px;
-    left: 600px;
-    top: 15px;
-    bottom: 0px;
-  }
-  #output-window code{
-    display: block;
-    position:absolute;
-    top:0px;
-    bottom:80px;
-    width: 100%;
-    padding: 9.5px;
-    margin: 0 0 10px;
-    font-size: 13px;
-    line-height: 1.42857143;
-    color: hsl(0, 0%, 20%);
-    word-break: break-all;
-    word-wrap: break-word;
-    background-image: url('http://i.imgur.com/P8JZunC.png');
-    background-repeat:no-repeat;
-    background-position:center center;
-    background-color: hsl(0, 0%, 96%);
-    border: 1px solid hsl(0, 0%, 80%);
-    border-radius: 4px;
-    box-sizing: border-box;
-    overflow-y:auto;
-  }
-  #output-window .button-bar {
-    display:block;
-    width:100%;
-    position:absolute;
-    bottom:15px;
-  }
-  #output-window .button-bar input {
-    width:100%;
-    height:30px;
-    border: 1px solid hsl(0, 0%, 80%);
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-bottom:10px;
-  }
-  #output-window .button-bar button{
-    display:block;
-    float:left;
-    margin:0 5px 10px;
-  }
-  * {
-    font-family: monospace;
-  }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background: var(--bg-color);
+      display: flex;
+      min-height: 100vh;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .content {
+      flex: 1;
+      max-width: 780px;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    h1, h2, h3 {
+      color: hsl(220, 13%, 25%);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    code {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      background: hsl(220, 13%, 95%);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    pre code {
+      display: block;
+      padding: 1rem;
+      margin: 1rem 0;
+      background: hsl(220, 13%, 95%);
+      border-radius: var(--border-radius);
+      overflow-x: auto;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    li {
+      margin: 0.5rem 0;
+      line-height: 1.7;
+    }
+
+    .endpoint-list li {
+      background: var(--card-bg);
+      padding: 1rem;
+      margin: 0.75rem 0;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      transition: transform 0.2s;
+    }
+
+    .endpoint-list li:hover {
+      transform: translateX(5px);
+    }
+
+    #output-window {
+      flex: 0 0 400px;
+      height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1rem;
+    }
+
+    #output {
+      flex: 1;
+      background: hsl(220, 13%, 95%);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      overflow-y: auto;
+    }
+
+    .button-bar {
+      display: grid;
+      gap: 0.5rem;
+      grid-template-columns: 1fr auto auto auto;
+    }
+
+    input, button {
+      padding: 0.6rem 1rem;
+      border: 1px solid hsl(220, 13%, 85%);
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px hsla(210, 80%, 55%, 0.2);
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      background: hsl(220, 13%, 85%);
+      cursor: not-allowed;
+    }
+
+    .connect { background: var(--success-color); }
+    .kill { background: var(--danger-color); }
+    .send { background: var(--primary-color); }
+
+    .message-log {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .message-log p {
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      background: white;
+      box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.05);
+    }
+
+    .message-log .received { color: var(--success-color); }
+    .message-log .sent { color: var(--primary-color); }
+    .message-log .error { color: var(--danger-color); }
+    .message-log .status { color: var(--warning-color); }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      #output-window {
+        flex: none;
+        height: 400px;
+      }
+
+      .button-bar {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body id='manpage'>
-  <a class="fork-me" href="http://github.com/therebelrobot/sockbin"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
-  <div class='mp'>
-    <h1>sockbin(1): Websocket Echo Service</h1>
-    <p>Build with &lt;3 by <a href="https://therebelrobot.com/">therebelrobot</a> using <a href="https://nodejs.org">Node.js</a></p>
-    <h2 id="HOST">HOSTNAME</h2>
+  <div class='content'>
+    <h1>sockbin(1): WebSocket 回显服务</h1>
+    <p>由 <a href="https://therebelrobot.com/">therebelrobot</a> 使用 <a href="https://nodejs.org">Node.js</a> 构建</p>
+    <h2 id="HOST">主机名</h2>
     <ul>
       <li><code>ws://sockb.in</code></li>
     </ul>
-    <h2 id="ENDPOINTS">ENDPOINTS</h2>
+    <h2 id="ENDPOINTS">端点</h2>
     <ul>
-      <li><a href="#" class="endpoint" data-endpoint="/"><code>/</code></a> Basic echo.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/?response=%7Bfoo%3A%20bar%7D"><code>/?response=%7Bfoo%3A%20bar%7D</code></a> Custom Response.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/?pipe=http%3A%2F%2Fhttpbin.org%2Fget"><code>/?pipe=http%3A%2F%2Fhttpbin.org%2Fget</code></a> Fetch an external url.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/delay/1000"><code>/delay/:n</code></a> Return response after <em>n</em> millisecond delay.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/repeat/5"><code>/repeat/:n</code></a> Return response <em>n</em> times.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/runfor/60000/delay/5000"><code>/runfor/:n/delay/:n</code></a> Return response with <em>n</em> ms delay for <em>n</em> ms.</li>
-      <li><a href="#" class="endpoint" data-endpoint="/repeat/5/delay/5000"><code>/repeat/:n/delay/:n</code></a> Functions can be chained.</li>
+      <li><a href="#" class="endpoint" data-endpoint="/"><code>/</code></a> 基本回显。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/?response=%7Bfoo%3A%20bar%7D"><code>/?response=%7Bfoo%3A%20bar%7D</code></a> 自定义响应。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/?pipe=http%3A%2F%2Fhttpbin.org%2Fget"><code>/?pipe=http%3A%2F%2Fhttpbin.org%2Fget</code></a> 获取外部 URL。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/delay/1000"><code>/delay/:n</code></a> 在 <em>n</em> 毫秒后返回响应。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/repeat/5"><code>/repeat/:n</code></a> 返回响应 <em>n</em> 次。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/runfor/60000/delay/5000"><code>/runfor/:n/delay/:n</code></a> 返回带有 <em>n</em> 毫秒延迟的响应持续 <em>n</em> 毫秒。</li>
+      <li><a href="#" class="endpoint" data-endpoint="/repeat/5/delay/5000"><code>/repeat/:n/delay/:n</code></a> 函数可以链式调用。</li>
     </ul>
-    <h2 id="DESCRIPTION">DESCRIPTION</h2>
-    <p>Testing a websocket library can become difficult sometimes. <a href="http://httpbin.org">HTTPbin</a> is fantastic for testing normal HTTP requests, but doesn't provide endpoints for websockets. This exists to cover that need. Currently only supports raw websocket requests, however support for additional websocket libraries are being worked on (Socket.io, etc).</p>
-    <p><em>Note: Due to hosting restrictions, repeat, delay, and runfor have default values (&lt;50, &gt;5000, &lt;350000, respectively). To override these values, please install sockbin locally and use the <code>override</code> method. See below for details.</em></p>
-    <p><em>Examples on this page are using <a href="https://github.com/therebelrobot/soxx">soxx</a>, a simple websocket microlib.</em></p>
-    <h2 id="Installing-and-running-from-PyPI">Installing and running locally</h2>
-    <p>You can install sockbin locally and override the hosting service restrictions by <a href="http://github.com/therebelrobot/sockbin">cloning the repo</a> and setting an <code>OVERRIDE</code> environment variable.</p>
+    <h2 id="DESCRIPTION">描述</h2>
+    <p>测试 WebSocket 库有时可能会变得困难。 <a href="http://httpbin.org">HTTPbin</a> 对于测试普通 HTTP 请求非常棒，但它不提供 WebSocket 端点。这正是为了满足这种需求而创建的。目前仅支持原始 WebSocket 请求，但正在开发对其他 WebSocket 库的支持（如 Socket.io 等）。</p>
+    <p><em>注意：由于托管限制，repeat、delay 和 runfor 的默认值分别为 (<50, >5000, <350000)。要覆盖这些值，请在本地安装 sockbin 并使用 <code>override</code> 方法。请参阅下方详细信息。</em></p>
+    <p><em>此页面上的示例使用了 <a href="https://github.com/therebelrobot/soxx">soxx</a>，一个简单的 WebSocket 微库。</em></p>
+    <h2 id="Installing-and-running-from-PyPI">本地安装和运行</h2>
+    <p>您可以通过 <a href="http://github.com/therebelrobot/sockbin">克隆仓库</a> 并设置 <code>OVERRIDE</code> 环境变量来在本地安装 sockbin 并覆盖托管服务的限制。</p>
     <pre><code class="bash">$ git clone https://github.com/therebelrobot/sockbin.git
 $ cd sockbin
 $ npm install
 $ OVERRIDE=token npm start
 </code></pre>
-    <p>When you then add <code>&override=token</code> to your request endpoint, you can spam your server as much as you like.</p>
-    <p>I'm currently working on getting a cli published to NPM (it's on there, but no interface atm). Check back soon for that.</p>
-    <h2 id="Changelog">Changelog</h2>
+    <p>当您将 <code>&override=token</code> 添加到请求端点时，您可以随意向服务器发送请求。</p>
+    <p>我目前正在努力将 CLI 发布到 NPM（它已经在上面了，但目前没有界面）。请稍后查看更新。</p>
+    <h2 id="Changelog">变更日志</h2>
     <p>
-    Refer to Sockbin's <a href="https://github.com/therebelrobot/sockbin/releases">Github releases page</a>.
+    参考 Sockbin 的 <a href="https://github.com/therebelrobot/sockbin/releases">GitHub 发布页面</a>。
     </p>
-    <h2 id="AUTHOR">AUTHOR</h2>
-    <p>Originally created by <a href="http://therebelrobot.com/">Trent Oswald (@therebelrobot)</a>.</p>
-    <h2 id="SEE-ALSO">SEE ALSO</h2>
-    <p><a href="http://mockbin.com">mockbin</a> - Custom HTTP Request &amp; Response Endpoints.</p>
-    <p><a href="https://www.httpbin.org">httpbin</a> - HTTP Request &amp; Response Service.</p>
-    <p><a href="http://www.getpostman.com/">Postman</a> - Make HTTP requests and inspect responses.</p>
-    <p><a href="https://www.hurl.it">Hurl.it</a> - Make HTTP requests.</p>
-    <p><a href="http://requestb.in">RequestBin</a> - Inspect HTTP requests.</p>
+    <h2 id="AUTHOR">作者</h2>
+    <p>最初由 <a href="http://therebelrobot.com/">Trent Oswald (@therebelrobot)</a> 创建。</p>
   </div>
   <div id="output-window">
-    <code id="output">
-      Output:
+    <code id="output"  class="message-log">
+      输出:
 
     </code>
     <div class="button-bar">
       <input class="message" type="text" value="Hello Sockbin!" />
-      <button class="connect">Connect</button>
-      <button class="send">Send Message</button>
-      <button class="kill">Disconnect</button>
+      <button class="connect">连接</button>
+      <button class="send">发送消息</button>
+      <button class="kill">断开连接</button>
     </div>
   </div>
-  <script type="text/javascript" src="https://cdn.rawgit.com/therebelrobot/soxx/f755395a744a248baf20228f443f7d6f6b77b946/dist/soxx.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+  <script type="text/javascript" src="//g.alicdn.com/cm-design/mw-vendor/1.6.16/soxx.js"></script>
+  <script type="text/javascript" src="//cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
 $(document).ready(function () {
   $(document).on('click', '.endpoint', function (event) {
@@ -363,18 +285,18 @@ $(document).ready(function () {
       $output[0].scrollTop = $output[0].scrollHeight;
     }
     var onOpen = function onOpen (evt) {
-      writeToOutput('<span style="color: green;">CONNECTED to ' + path + '</span>')
+      writeToOutput('<span style="color: green;">已连接到 ' + path + '</span>')
       $send.attr('disabled', false)
       $kill.attr('disabled', false)
       $connect.attr('disabled', true)
     }
 
     var onRetry = function onRetry (evt) {
-      writeToOutput('Retrying connection to ' + path)
+      writeToOutput('正在重试连接到 ' + path)
       $('#' + elements.send).attr('disabled', false)
     }
     var onClose = function onClose (evt) {
-      writeToOutput('<span style="color: orange;">DISCONNECTED from ' + path + '</span>')
+      writeToOutput('<span style="color: orange;">已断开连接到 ' + path + '</span>')
       $send.attr('disabled', true)
       $kill.attr('disabled', true)
       $connect.attr('disabled', false)
@@ -382,15 +304,15 @@ $(document).ready(function () {
     }
 
     var onMessage = function onMessage (evt) {
-      writeToOutput('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>')
+      writeToOutput('<span style="color: blue;">响应: ' + evt.data + '</span>')
     }
 
     var onError = function onError (evt) {
-      writeToOutput('<span style="color: red;">RESPONSE: ' + evt.data + '</span>')
+      writeToOutput('<span style="color: red;">响应: ' + evt.data + '</span>')
     }
 
     var doSend = function doSend (message) {
-      writeToOutput('SENT: ' + message)
+      writeToOutput('已发送: ' + message)
       window.websocket.write(message)
     }
     var connect = function connect () {
@@ -405,7 +327,7 @@ $(document).ready(function () {
         onMessage: onMessage,
         onError: onError
       })
-      writeToOutput('CONNECTING to ' + path + ' ...')
+      writeToOutput('正在连接到 ' + path + ' ...')
       window.websocket.connect()
     }
     $send.attr('disabled', true)
@@ -415,10 +337,10 @@ $(document).ready(function () {
       var thisPath = window.websocket._settings.url
       thisPath = thisPath.split('ws://' + window.location.host)[1]
       window.websocket._settings.onClose = function () {
-        writeToOutput('<span style="color: orange;">DISCONNECTED from ' + thisPath + '</span>')
+        writeToOutput('<span style="color: orange;">已断开连接到 ' + thisPath + '</span>')
         connect()
       }
-      writeToOutput('DISCONNECTING from ' + thisPath + ' ...')
+      writeToOutput('正在断开连接到 ' + thisPath + ' ...')
       window.websocket.disconnect()
     } else {
       connect()
@@ -429,7 +351,7 @@ $(document).ready(function () {
       doSend(message)
     })
     $kill.off('click').on('click', function () {
-      writeToOutput('DISCONNECTING from ' + path + ' ...')
+      writeToOutput('正在断开连接到 ' + path + ' ...')
       window.websocket.disconnect()
     })
   })
@@ -439,4 +361,3 @@ $(document).ready(function () {
 </body>
 
 </html>
-
